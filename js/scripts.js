@@ -1,5 +1,45 @@
+// Business Logic for AddressBooks ---------
+function AddressShelf() {
+  this.addressBooks = [],
+  this.addressBookId = 0
+}
+
+AddressShelf.prototype.addAddressBook = function(addressBook) {
+  addressBook.id = this.assignId();
+  this.addressBooks.push(addressBook);
+}
+
+AddressShelf.prototype.assignId = function() {
+  this.addressBookId += 1;
+  return this.addressBookId;
+}
+
+AddressShelf.prototype.findAddressBook = function(id) {
+  for (var i=0; i< this.addressBooks.length; i++) {
+    if (this.addressBooks[i]) {
+      if (this.addressBooks[i].id == id) {
+        return this.addressBooks[i];
+      }
+    }
+  };
+  return false;
+}
+
+AddressShelf.prototype.deleteAddressBook = function(id) {
+  for (var i=0; i< this.addressBooks.length; i++) {
+    if (this.addressBooks[i]) {
+      if (this.addressBooks[i].id == id) {
+        delete this.addressBooks[i];
+        return true;
+      }
+    }
+  };
+  return false;
+}
+
 // Business Logic for AddressBook ---------
-function AddressBook() {
+function AddressBook(addressBookName) {
+  this.addressBookName = addressBookName;
   this.contacts = [],
   this.currentId = 0
 }
@@ -91,7 +131,7 @@ function Email(emailType, emailAddress) {
 }
 
 // User Interface Logic ---------
-var addressBook = new AddressBook();
+var addressBookShelf = new AddressShelf();
 
 function displayContactDetails(addressBookToDisplay) {
   var contactsList = $("ul#contacts");
@@ -120,7 +160,7 @@ function showContact(contactId) {
   displayEmails(contact);
   var buttons = $("#buttons");
   buttons.empty();
-  buttons.append("<button class='addEmailButton' id='Email" + contact.id + "'>Add Email</button><br><br><input type='text' class='form-control' id='newEmailType'><input type='text' class='form-control' id='new-email'><br>");
+  buttons.append("<button class='addEmailButton' id='Email" + contact.id + "'>Add Email</button><br><br>Email Type<input type='text' class='form-control' id='newEmailType'>Email Address<input type='text' class='form-control' id='new-email'><br>");
   buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
 }
 
@@ -131,7 +171,8 @@ function attachContactListeners() {
   $("#buttons").on("click", ".deleteButton", function() {
     addressBook.deleteContact(this.id);
     $("#show-contact").hide();
-    displayContactDetails(addressBook);
+    var addressBookId = parseInt($("#addressBook").attr("addressBookId"));
+    displayContactDetails(addressBookShelf.findAddressBook(addressBookId));
   });
   $("#buttons").on("click", ".addEmailButton", function() {
     var id = parseInt(this.id.substring(5,this.id.length));
@@ -143,6 +184,12 @@ function attachContactListeners() {
       addressBook.findContact(id).addEmailAddress(newEmail);
       showContact(id);
     };
+  });
+  $("#navAddressBooks").on("click", "a", function(){
+    var addressBookId = parseInt(this.id.substring(13, this.id.length));
+    $("#addressBook").attr("addressBookId", addressBookId.toString());
+    var currentAddressBook = addressBookShelf.findAddressBook(addressBookId);
+    displayContactDetails(currentAddressBook);
   });
 };
 
@@ -163,7 +210,23 @@ $(document).ready(function() {
     var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
     var newEmail = new Email(inputtedEmailType, inputtedEmailAddress);
     newContact.addEmailAddress(newEmail);
-    addressBook.addContact(newContact);
-    displayContactDetails(addressBook);
-  })
+    var addressBookId = parseInt($("#addressBook").attr("addressBookId"));
+    var currentAddressBook = addressBookShelf.findAddressBook(addressBookId);
+    currentAddressBook.addContact(newContact);
+    displayContactDetails(currentAddressBook);
+  });
+
+  $("#addAddressBook").click(function() {
+    var inputtedAddressBook = $("input#new-address-book").val();
+    var addressBookElement = $("#addressBook");
+    $("input#new-address-book").val("");
+    if (inputtedAddressBook !== "") {
+      addressBookElement.show();
+      var newAddressBook = new AddressBook(inputtedAddressBook);
+      addressBookShelf.addAddressBook(newAddressBook);
+      $("#navAddressBooks").append("<a id='AddressBookId" + newAddressBook.id + "'>" + newAddressBook.addressBookName + "</a>  ");
+      addressBookElement.attr("addressBookId", newAddressBook.id.toString());
+      console.log(addressBookShelf);
+    }
+  });
 })

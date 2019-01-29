@@ -10,48 +10,59 @@
   </head>
   <body>
     <div class="container">
-      <h1>Address Book</h1>
-      <div class="row">
-        <div class="col-md-6">
-          <hr>
-          <h2>Add a Contact:</h2>
-          <form id="new-contact">
-            <div class="form-group">
-              <label for="new-first-name">First Name</label>
-              <input type="text"  class="form-control" id="new-first-name" value="John">
-            </div>
-            <div class="form-group">
-              <label for="new-last-name">Last Name</label>
-              <input type="text"  class="form-control" id="new-last-name" value="Smith">
-            </div>
-            <div class="form-group">
-              <label for="new-phone-number">Phone Number</label>
-              <input type="text"  class="form-control" id="new-phone-number" value="12345">
-            </div>
-            <div class="form-group">
-              <label for="new-email-type">Email Type</label>
-              <input type="text"  class="form-control" id="new-email-type" value="personal">
-              <label for="new-email-address">Email Address</label>
-              <input type="text"  class="form-control" id="new-email-address" value="a@gmail.com">
-            </div>
-            <button type="submit" class="btn-primary">Add</button>
-          </form>
-          <hr>
-          <h2>Contacts:</h2>
-          <ul id="contacts">
-          </ul>
-        </div>
-        <div class="col-md-6">
-          <div id="show-contact">
-            <p>First Name: <span class="first-name"></span></p>
-            <p>Last Name: <span class="last-name"></span></p>
-            <p>Phone Number: <span class="phone-number"></span></p>
-            <p>Email Address:</p>
-            <p>
-              <ul id="emails">
-              </ul>
-            </p>
-            <div id="buttons">
+      <h1>Address Bookshelf</h1>
+      <div>
+        <label for="new-address-book">New Address Book
+        <input type="text"  class="form-control" id="new-address-book" value="Personal"><br>
+        <button type="button" id="addAddressBook" class="btn-primary">Add</button>
+      </div>
+      <nav id="navAddressBooks">
+
+      </nav>
+      <div id="addressBook" addressBookId="0">
+        <h2>Address Book</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <hr>
+            <h3>Add a Contact:</h3>
+            <form id="new-contact">
+              <div class="form-group">
+                <label for="new-first-name">First Name</label>
+                <input type="text"  class="form-control" id="new-first-name" value="John">
+              </div>
+              <div class="form-group">
+                <label for="new-last-name">Last Name</label>
+                <input type="text"  class="form-control" id="new-last-name" value="Smith">
+              </div>
+              <div class="form-group">
+                <label for="new-phone-number">Phone Number</label>
+                <input type="text"  class="form-control" id="new-phone-number" value="12345">
+              </div>
+              <div class="form-group">
+                <label for="new-email-type">Email Type</label>
+                <input type="text"  class="form-control" id="new-email-type" value="personal">
+                <label for="new-email-address">Email Address</label>
+                <input type="text"  class="form-control" id="new-email-address" value="a@gmail.com">
+              </div>
+              <button type="submit" class="btn-primary">Add</button>
+            </form>
+            <hr>
+            <h2>Contacts:</h2>
+            <ul id="contacts">
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <div id="show-contact">
+              <p>First Name: <span class="first-name"></span></p>
+              <p>Last Name: <span class="last-name"></span></p>
+              <p>Phone Number: <span class="phone-number"></span></p>
+              <p>Email Address:</p>
+              <p>
+                <ul id="emails">
+                </ul>
+              </p>
+              <div id="buttons">
+              </div>
             </div>
           </div>
         </div>
