@@ -42,15 +42,52 @@ function Contact(firstName, lastName, phoneNumber) {
   this.firstName = firstName,
   this.lastName = lastName,
   this.phoneNumber = phoneNumber,
-  this.emails = []
+  this.emails = [],
+  this.emailId = 0
+}
+
+Contact.prototype.assignEmailId = function() {
+  this.emailId += 1;
+  return this.emailId;
 }
 
 Contact.prototype.addEmailAddress = function(newEmail){
+  newEmail.emailId = this.assignEmailId();
   this.emails.push(newEmail);
 }
 
 Contact.prototype.fullName = function() {
   return this.firstName + " " + this.lastName;
+}
+
+Contact.prototype.findEmail = function(id) {
+  for (var i=0; i< this.emails.length; i++) {
+    if (this.emails[i]) {
+      if (this.emails[i].emailId == id) {
+        return this.emails[i];
+      }
+    }
+  };
+  return false;
+}
+
+Contact.prototype.deleteEmail = function(id) {
+  for (var i=0; i< this.emails.length; i++) {
+    if (this.emails[i]) {
+      if (this.emails[i].emailId == id) {
+        delete this.emails[i];
+        return true;
+      }
+    }
+  };
+  return false;
+}
+
+// Business Logic for Emails ---------
+function Email(emailType, emailAddress) {
+  this.emailType = emailType;
+  this.emailAddress = emailAddress;
+
 }
 
 // User Interface Logic ---------
@@ -69,7 +106,7 @@ function displayEmails(contact){
   var emailList = $("ul#emails");
   var htmlForEmails = "";
   contact.emails.forEach(function(email){
-    htmlForEmails += "<li>" + email + "</li>";
+    htmlForEmails += "<li>" + email.emailType + ": " + email.emailAddress + "</li>";
   });
   emailList.html(htmlForEmails);
 };
@@ -83,7 +120,7 @@ function showContact(contactId) {
   displayEmails(contact);
   var buttons = $("#buttons");
   buttons.empty();
-  buttons.append("<button class='addEmailButton' id='Email" + contact.id + "'>Add Email</button><br><br><input type='text' class='form-control' id='new-email'><br>");
+  buttons.append("<button class='addEmailButton' id='Email" + contact.id + "'>Add Email</button><br><br><input type='text' class='form-control' id='newEmailType'><input type='text' class='form-control' id='new-email'><br>");
   buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
 }
 
@@ -98,8 +135,11 @@ function attachContactListeners() {
   });
   $("#buttons").on("click", ".addEmailButton", function() {
     var id = parseInt(this.id.substring(5,this.id.length));
-    var newEmail = $("#new-email").val().trim();
-    if (newEmail !== ""){
+    var newEmailAddress = $("#new-email").val().trim();
+    var newEmailType = $("#newEmailType").val().trim();
+
+    if (newEmailAddress !== "" && newEmailType !== ""){
+      var newEmail = new Email(newEmailType, newEmailAddress);
       addressBook.findContact(id).addEmailAddress(newEmail);
       showContact(id);
     };
@@ -114,12 +154,15 @@ $(document).ready(function() {
     var inputtedLastName = $("input#new-last-name").val();
     var inputtedPhoneNumber = $("input#new-phone-number").val();
     var inputtedEmailAddress = $("input#new-email-address").val();
+    var inputtedEmailType = $("input#new-email-type").val();
     $("input#new-first-name").val("");
     $("input#new-last-name").val("");
     $("input#new-phone-number").val("");
     $("input#new-email-address").val("");
+    $("input#new-email-type").val("");
     var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
-    newContact.addEmailAddress(inputtedEmailAddress);
+    var newEmail = new Email(inputtedEmailType, inputtedEmailAddress);
+    newContact.addEmailAddress(newEmail);
     addressBook.addContact(newContact);
     displayContactDetails(addressBook);
   })
