@@ -65,16 +65,25 @@ function displayContactDetails(addressBookToDisplay) {
   contactsList.html(htmlForContactInfo);
 };
 
+function displayEmails(contact){
+  var emailList = $("ul#emails");
+  var htmlForEmails = "";
+  contact.emails.forEach(function(email){
+    htmlForEmails += "<li>" + email + "</li>";
+  });
+  emailList.html(htmlForEmails);
+};
+
 function showContact(contactId) {
   var contact = addressBook.findContact(contactId);
   $("#show-contact").show();
   $(".first-name").html(contact.firstName);
   $(".last-name").html(contact.lastName);
   $(".phone-number").html(contact.phoneNumber);
-  $(".email-address").html(contact.emails.join(','));
+  displayEmails(contact);
   var buttons = $("#buttons");
   buttons.empty();
-  buttons.append("<button class='addEmailButton' id='Email" + contact.id + "'>Add Email</button><input type='text' class='form-control' id='new-email'>");
+  buttons.append("<button class='addEmailButton' id='Email" + contact.id + "'>Add Email</button><br><br><input type='text' class='form-control' id='new-email'><br>");
   buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
 }
 
@@ -90,10 +99,8 @@ function attachContactListeners() {
   $("#buttons").on("click", ".addEmailButton", function() {
     var id = parseInt(this.id.substring(5,this.id.length));
     var newEmail = $("#new-email").val().trim();
-    console.log(newEmail);
     if (newEmail !== ""){
       addressBook.findContact(id).addEmailAddress(newEmail);
-      console.log(addressBook.findContact(id));
       showContact(id);
     };
   });
